@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .quiz-container { max-width: 600px; margin: auto; padding: 20px; }
+        button { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Quiz Title</h1>
+        <div id="question"></div>
+        <div id="answers"></div>
+        <button id="nextButton">Next</button>
+        <div id="score" style="display: none;"></div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "Question 1?", answers: ["Answer 1", "Answer 2", "Answer 3"], correct: 0 },
+            { question: "Question 2?", answers: ["Answer 1", "Answer 2", "Answer 3"], correct: 1 },
+            // Add more questions as needed
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            if (currentQuestion < questions.length) {
+                const q = questions[currentQuestion];
+                document.getElementById('question').innerText = q.question;
+                const answersDiv = document.getElementById('answers');
+                answersDiv.innerHTML = '';
+                q.answers.forEach((answer, index) => {
+                    const button = document.createElement('button');
+                    button.innerText = answer;
+                    button.onclick = () => selectAnswer(index);
+                    answersDiv.appendChild(button);
+                });
+            } else {
+                showScore();
+            }
+        }
+
+        function selectAnswer(index) {
+            if (index === questions[currentQuestion].correct) {
+                score++;
+            }
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function showScore() {
+            document.getElementById('question').innerText = 'Quiz Finished!';
+            document.getElementById('answers').innerHTML = '';
+            document.getElementById('score').innerText = `Your score: ${score}`;
+            document.getElementById('score').style.display = 'block';
+        }
+
+        document.getElementById('nextButton').onclick = loadQuestion;
+
+        loadQuestion();
+    </script>
+</body>
+</html>
