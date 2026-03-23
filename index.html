@@ -3,67 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Quiz</title>
+    <title>Quiz Application</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .quiz-container { max-width: 600px; margin: auto; padding: 20px; }
-        button { margin: 10px 0; }
+        body { font-family: Arial, sans-serif; background: #f0f8ff; }
+        header { background: #4682b4; color: white; padding: 20px; text-align: center; }
+        .container { margin: 20px auto; max-width: 600px; }
+        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0; }
+        button { padding: 10px; background: #4682b4; color: white; border: none; cursor: pointer; }
+        button:hover { background: #5a9bd3; }
     </style>
 </head>
 <body>
-    <div class="quiz-container">
-        <h1>Quiz Title</h1>
-        <div id="question"></div>
-        <div id="answers"></div>
-        <button id="nextButton">Next</button>
-        <div id="score" style="display: none;"></div>
+    <header>
+        <h1>Quiz Application</h1>
+    </header>
+    <div class="container">
+        <div id="home">
+            <h2>Welcome! Enter your Nickname:</h2>
+            <input type="text" id="nickname" placeholder="Nickname" />
+            <button onclick="startQuiz()">Start Quiz</button>
+        </div>
+        <div id="adminPanel" style="display:none;">
+            <h2>Admin Panel</h2>
+            <input type="text" id="category" placeholder="Category" />
+            <button onclick="createCategory()">Create Category</button>
+            <div id="categories"></div>
+            <h3>Add Question</h3>
+            <input type="text" id="question" placeholder="Question" />
+            <button onclick="addQuestion()">Add Question</button>
+        </div>
+        <div id="quizPage" style="display:none;">
+            <h2>Quiz</h2>
+            <div id="quizQuestions"></div>
+            <button onclick="submitQuiz()">Submit Quiz</button>
+        </div>
     </div>
-
     <script>
-        const questions = [
-            { question: "Question 1?", answers: ["Answer 1", "Answer 2", "Answer 3"], correct: 0 },
-            { question: "Question 2?", answers: ["Answer 1", "Answer 2", "Answer 3"], correct: 1 },
-            // Add more questions as needed
-        ];
+        function startQuiz() {
+            const nickname = document.getElementById('nickname').value;
+            localStorage.setItem('nickname', nickname);
+            alert('Quiz Started! Hello ' + nickname);
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('quizPage').style.display = 'block';
+        }
 
-        let currentQuestion = 0;
-        let score = 0;
-
-        function loadQuestion() {
-            if (currentQuestion < questions.length) {
-                const q = questions[currentQuestion];
-                document.getElementById('question').innerText = q.question;
-                const answersDiv = document.getElementById('answers');
-                answersDiv.innerHTML = '';
-                q.answers.forEach((answer, index) => {
-                    const button = document.createElement('button');
-                    button.innerText = answer;
-                    button.onclick = () => selectAnswer(index);
-                    answersDiv.appendChild(button);
-                });
-            } else {
-                showScore();
+        function createCategory() {
+            const category = document.getElementById('category').value;
+            if (category) {
+                let categories = JSON.parse(localStorage.getItem('categories')) || [];
+                categories.push(category);
+                localStorage.setItem('categories', JSON.stringify(categories));
+                document.getElementById('categories').innerHTML += '<div>' + category + '</div>';
+                document.getElementById('category').value = '';
             }
         }
 
-        function selectAnswer(index) {
-            if (index === questions[currentQuestion].correct) {
-                score++;
+        function addQuestion() {
+            const question = document.getElementById('question').value;
+            if (question) {
+                let questions = JSON.parse(localStorage.getItem('questions')) || [];
+                questions.push(question);
+                localStorage.setItem('questions', JSON.stringify(questions));
+                document.getElementById('question').value = '';
             }
-            currentQuestion++;
-            loadQuestion();
         }
 
-        function showScore() {
-            document.getElementById('question').innerText = 'Quiz Finished!';
-            document.getElementById('answers').innerHTML = '';
-            document.getElementById('score').innerText = `Your score: ${score}`;
-            document.getElementById('score').style.display = 'block';
+        function submitQuiz() {
+            alert('Quiz submitted!');
         }
-
-        document.getElementById('nextButton').onclick = loadQuestion;
-
-        loadQuestion();
     </script>
 </body>
 </html>
