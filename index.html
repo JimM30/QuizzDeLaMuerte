@@ -4,73 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Application</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f0f8ff; }
-        header { background: #4682b4; color: white; padding: 20px; text-align: center; }
-        .container { margin: 20px auto; max-width: 600px; }
-        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0; }
-        button { padding: 10px; background: #4682b4; color: white; border: none; cursor: pointer; }
-        button:hover { background: #5a9bd3; }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header>
         <h1>Quiz Application</h1>
+        <nav>
+            <ul>
+                <li><a href="#admin">Admin Panel</a></li>
+                <li><a href="#quiz">Start Quiz</a></li>
+            </ul>
+        </nav>
     </header>
-    <div class="container">
-        <div id="home">
-            <h2>Welcome! Enter your Nickname:</h2>
-            <input type="text" id="nickname" placeholder="Nickname" />
-            <button onclick="startQuiz()">Start Quiz</button>
-        </div>
-        <div id="adminPanel" style="display:none;">
+    <main>
+        <section id="admin">
             <h2>Admin Panel</h2>
-            <input type="text" id="category" placeholder="Category" />
-            <button onclick="createCategory()">Create Category</button>
-            <div id="categories"></div>
-            <h3>Add Question</h3>
-            <input type="text" id="question" placeholder="Question" />
-            <button onclick="addQuestion()">Add Question</button>
-        </div>
-        <div id="quizPage" style="display:none;">
-            <h2>Quiz</h2>
-            <div id="quizQuestions"></div>
-            <button onclick="submitQuiz()">Submit Quiz</button>
-        </div>
-    </div>
+            <form id="adminForm">
+                <label for="adminPassword">Password:</label>
+                <input type="password" id="adminPassword" required />
+                <button type="submit">Login</button>
+            </form>
+            <div id="adminControls" style="display:none;">
+                <h3>Create Category</h3>
+                <form id="categoryForm">
+                    <label for="categoryName">Category Name:</label>
+                    <input type="text" id="categoryName" required />
+                    <button type="submit">Create</button>
+                </form>
+                <h3>Create Question</h3>
+                <form id="questionForm">
+                    <label for="questionText">Question:</label>
+                    <input type="text" id="questionText" required />
+                    <label for="categorySelect">Category:</label>
+                    <select id="categorySelect"></select>
+                    <button type="submit">Add Question</button>
+                </form>
+            </div>
+        </section>
+        <section id="quiz">
+            <h2>Start Quiz</h2>
+            <div id="quizContainer" style="display:none;">
+                <h3 id="questionDisplay">Question will be displayed here</h3>
+                <button id="nextButton">Next</button>
+            </div>
+        </section>
+    </main>
     <script>
-        function startQuiz() {
-            const nickname = document.getElementById('nickname').value;
-            localStorage.setItem('nickname', nickname);
-            alert('Quiz Started! Hello ' + nickname);
-            document.getElementById('home').style.display = 'none';
-            document.getElementById('quizPage').style.display = 'block';
-        }
-
-        function createCategory() {
-            const category = document.getElementById('category').value;
-            if (category) {
-                let categories = JSON.parse(localStorage.getItem('categories')) || [];
-                categories.push(category);
-                localStorage.setItem('categories', JSON.stringify(categories));
-                document.getElementById('categories').innerHTML += '<div>' + category + '</div>';
-                document.getElementById('category').value = '';
+        const adminPassword = "admin123"; // Example password
+        document.getElementById('adminForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const passwordInput = document.getElementById('adminPassword').value;
+            if (passwordInput === adminPassword) {
+                document.getElementById('adminControls').style.display = 'block';
+            } else {
+                alert('Incorrect password');
             }
-        }
-
-        function addQuestion() {
-            const question = document.getElementById('question').value;
-            if (question) {
-                let questions = JSON.parse(localStorage.getItem('questions')) || [];
-                questions.push(question);
-                localStorage.setItem('questions', JSON.stringify(questions));
-                document.getElementById('question').value = '';
-            }
-        }
-
-        function submitQuiz() {
-            alert('Quiz submitted!');
-        }
+        });
+        document.getElementById('categoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const categoryName = document.getElementById('categoryName').value;
+            const categorySelect = document.getElementById('categorySelect');
+            const newOption = document.createElement('option');
+            newOption.value = categoryName;
+            newOption.textContent = categoryName;
+            categorySelect.appendChild(newOption);
+            document.getElementById('categoryName').value = '';
+        });
+        // Implement question creation and quiz functionality here.
     </script>
 </body>
 </html>
